@@ -4,4 +4,7 @@
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <Nullable>disable</Nullable>
   </PropertyGroup>
+  <ItemGroup>
+    <Content Include="addons\gouito\README.md" />
+  </ItemGroup>
 </Project>
