@@ -1,4 +1,6 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace gouito.Example;
 
@@ -16,8 +18,18 @@ public class ClickerViewModel: ViewModel
     public int Clicks
     {
         get => _clicks;
-        set => SetField(ref _clicks, value);
+        private set
+        {
+            if (_clicks < value)
+            {
+                Timestamps.Add(DateTime.Now.ToString("hh:mm:ss"));
+            }
+            
+            SetField(ref _clicks, value);
+        }
     }
+
+    public ObservableCollection<string> Timestamps { get; } = new();
 
     #endregion
 

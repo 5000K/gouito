@@ -1,11 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://bgjthulhtq5o2"]
+[gd_scene load_steps=5 format=3 uid="uid://bgjthulhtq5o2"]
 
 [ext_resource type="Script" path="res://Example/ClickerBinder.cs" id="1_ocn58"]
+[ext_resource type="Script" path="res://StringCollectionView.cs" id="2_u8ylm"]
+[ext_resource type="PackedScene" uid="uid://qylgr605iox" path="res://Example/TimestampView.tscn" id="3_3wqqg"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_l4vlr"]
 font_size = 40
 
-[node name="Control" type="Control" node_paths=PackedStringArray("_button", "_clicks")]
+[node name="Control" type="Control" node_paths=PackedStringArray("_button", "_clicks", "_stringCollectionView")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,6 +17,7 @@ grow_vertical = 2
 script = ExtResource("1_ocn58")
 _button = NodePath("VBoxContainer/Button")
 _clicks = NodePath("VBoxContainer/Label")
+_stringCollectionView = NodePath("VBoxContainer/Timestamps")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 0
@@ -28,3 +31,12 @@ label_settings = SubResource("LabelSettings_l4vlr")
 [node name="Button" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Click me."
+
+[node name="Label2" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Timestamps of the last clicks:"
+
+[node name="Timestamps" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+script = ExtResource("2_u8ylm")
+Scene = ExtResource("3_3wqqg")
