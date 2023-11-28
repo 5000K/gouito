@@ -1,19 +1,51 @@
-﻿using Godot;
+﻿using System.Windows.Input;
+using Godot;
 
 namespace gouito.Target;
 
 public static class TargetExtensions
 {
-    public static IBindingTarget<bool> BindVisibility(this CanvasItem item)
+    public static IBindingTarget<bool> VisibilityTarget(this CanvasItem item)
     {
         return new VisibilityTarget(item);
     }
     
-    public static IBindingTarget<bool> BindVisibility(this Node3D item)
+    public static IBindingTarget<bool> VisibilityTarget(this Node3D item)
     {
         return new VisibilityTarget(item);
     }
 
+    
+    public static IBindingTarget<string> TextTarget(this Label node)
+    {
+        return new TextBindingTarget(node);
+    }
+    
+    public static IBindingTarget<string> TextTarget(this Label3D node)
+    {
+        return new TextBindingTarget(node);
+    }
+    
+    public static IBindingTarget<string> TextTarget(this TextEdit node)
+    {
+        return new TextBindingTarget(node);
+    }
+    
+    public static IBindingTarget<string> TextTarget(this LineEdit node)
+    {
+        return new TextBindingTarget(node);
+    }
+    
+    public static IBindingTarget<string> TextTarget(this RichTextLabel node)
+    {
+        return new TextBindingTarget(node);
+    }
+
+    public static IBindingTarget<ICommand> CommandTarget(this BaseButton button, ButtonCommandExecutionPolicy policy = ButtonCommandExecutionPolicy.OnDown)
+    {
+        return new CommandTarget(button, policy);
+    }
+    
     #region WrappedBindingTarget
     
     public static IBindingTarget<TS> Wrap<TS, TT>(this IBindingTarget<TT> target, IConverter<TS, TT> converter)

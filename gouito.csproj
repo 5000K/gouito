@@ -4,7 +4,4 @@
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <Nullable>disable</Nullable>
   </PropertyGroup>
-  <ItemGroup>
-    <Folder Include="Example\" />
-  </ItemGroup>
 </Project>
