@@ -1,5 +1,6 @@
 # gouito
-> Godot UI Toolkit
+> Godot UI Toolkit - MVVM for godot  
+> [Get the latest release here](https://github.com/5000K/gouito/releases/latest)
 
 gouito is a c# godot library targeted at establishing basic structures for UIs.
 
