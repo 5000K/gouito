@@ -1,4 +1,5 @@
-# gouito
+![# gouito](https://github.com/5000K/gouito/blob/master/assets/logo.png?raw=true)
+
 > Godot UI Toolkit - MVVM for godot  
 > [Get the latest release here](https://github.com/5000K/gouito/releases/latest)
 
