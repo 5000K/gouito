@@ -4,11 +4,11 @@ using Godot;
 namespace gouito.Target;
 
 /// <summary>
-/// Binding that automatically binds to various text-outputs
+/// Binding that automatically correctly binds to various text-inputs/outputs
 /// </summary>
 public class TextBindingTarget: IBindingTarget<string>
 {
-    private IBindingTarget<string> _subBindingTarget;
+    private readonly IBindingTarget<string> _subBindingTarget;
 
     public event PropertyChangedEventHandler PropertyChanged
     {
@@ -30,6 +30,11 @@ public class TextBindingTarget: IBindingTarget<string>
     {
         _subBindingTarget = new TextEditTextBindingTarget(edit);
     }
+    
+    public TextBindingTarget(LineEdit edit)
+    {
+        _subBindingTarget = new LineEditTextBindingTarget(edit);
+    }
 
     public TextBindingTarget(RichTextLabel edit)
     {
@@ -48,7 +53,7 @@ public class TextBindingTarget: IBindingTarget<string>
     
     private class LabelTextBindingTarget: IBindingTarget<string>
     {
-        private Label _label;
+        private readonly Label _label;
 
         public LabelTextBindingTarget(Label label)
         {
@@ -62,7 +67,7 @@ public class TextBindingTarget: IBindingTarget<string>
         
         public event PropertyChangedEventHandler PropertyChanged;
         
-        public string PropertyName { get; } = "text";
+        public string PropertyName => "text";
 
         public string Value
         {
@@ -73,7 +78,7 @@ public class TextBindingTarget: IBindingTarget<string>
 
     private class RichTextLabelTextBindingTarget: IBindingTarget<string>
     {
-        private RichTextLabel _label;
+        private readonly RichTextLabel _label;
 
         public RichTextLabelTextBindingTarget(RichTextLabel label)
         {
@@ -87,7 +92,7 @@ public class TextBindingTarget: IBindingTarget<string>
         
         public event PropertyChangedEventHandler PropertyChanged;
         
-        public string PropertyName { get; } = "text";
+        public string PropertyName => "text";
 
         public string Value
         {
@@ -98,7 +103,7 @@ public class TextBindingTarget: IBindingTarget<string>
 
     private class Label3DTextBindingTarget: IBindingTarget<string>
     {
-        private Label3D _label;
+        private readonly Label3D _label;
 
         public Label3DTextBindingTarget(Label3D label)
         {
@@ -112,7 +117,7 @@ public class TextBindingTarget: IBindingTarget<string>
         
         public event PropertyChangedEventHandler PropertyChanged;
         
-        public string PropertyName { get; } = "text";
+        public string PropertyName => "text";
 
         public string Value
         {
@@ -123,7 +128,7 @@ public class TextBindingTarget: IBindingTarget<string>
 
     private class TextEditTextBindingTarget: IBindingTarget<string>
     {
-        private TextEdit _textEdit;
+        private readonly TextEdit _textEdit;
 
         public TextEditTextBindingTarget(TextEdit textEdit)
         {
@@ -138,7 +143,7 @@ public class TextBindingTarget: IBindingTarget<string>
         
         public event PropertyChangedEventHandler PropertyChanged;
         
-        public string PropertyName { get; } = "text";
+        public string PropertyName => "text";
 
         public string Value
         {
@@ -146,7 +151,35 @@ public class TextBindingTarget: IBindingTarget<string>
             set => _textEdit.Text = value;
         }
     }
-    
+
+
+    private class LineEditTextBindingTarget: IBindingTarget<string>
+    {
+        private readonly LineEdit _textEdit;
+
+        public LineEditTextBindingTarget(LineEdit textEdit)
+        {
+            _textEdit = textEdit;
+            textEdit.TextSubmitted += OnTextChanged;
+        }
+
+        private void OnTextChanged(string _)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
+        }
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+        
+        public string PropertyName => "text";
+
+        public string Value
+        {
+            get => _textEdit.Text;
+            set => _textEdit.Text = value;
+        }
+    }
+
+
     #endregion
 }
 
