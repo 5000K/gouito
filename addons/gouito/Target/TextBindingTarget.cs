@@ -1,11 +1,12 @@
 ﻿// part of 5000K/gouito, licensed under MIT. Get a license under https://github.com/5000K/gouito.
 
-// no nullability warning (warning on => nullable projects care, warning off => no project cares. implement nullability => standard projects care. ==> turn off warning for now.) 
 // ReSharper disable CheckNamespace
-#pragma warning disable CS8612
 
 using System.ComponentModel;
 using Godot;
+// ReSharper disable ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
+#pragma warning disable CS8612 // Nullability of reference types in type doesn't match implicitly implemented member.
+#pragma warning disable CS0067
 
 namespace gouito.Target;
 
@@ -65,13 +66,8 @@ public class TextBindingTarget: IBindingTarget<string>
         {
             _label = label;
         }
-
-        private void DummyPropertyChanged(PropertyChangedEventArgs args)
-        {
-            PropertyChanged?.Invoke(this, args);
-        }
         
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged = null!;
         
         public string PropertyName => "text";
 
@@ -90,14 +86,9 @@ public class TextBindingTarget: IBindingTarget<string>
         {
             _label = label;
         }
+        
+        public event PropertyChangedEventHandler PropertyChanged = null!;
 
-        private void DummyPropertyChanged(PropertyChangedEventArgs args)
-        {
-            PropertyChanged?.Invoke(this, args);
-        }
-        
-        public event PropertyChangedEventHandler PropertyChanged;
-        
         public string PropertyName => "text";
 
         public string Value
@@ -115,13 +106,8 @@ public class TextBindingTarget: IBindingTarget<string>
         {
             _label = label;
         }
-
-        private void DummyPropertyChanged(PropertyChangedEventArgs args)
-        {
-            PropertyChanged?.Invoke(this, args);
-        }
         
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged = null!;
         
         public string PropertyName => "text";
 
@@ -147,7 +133,7 @@ public class TextBindingTarget: IBindingTarget<string>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
         }
         
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged = null!;
         
         public string PropertyName => "text";
 
@@ -174,7 +160,7 @@ public class TextBindingTarget: IBindingTarget<string>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
         }
         
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged = null!;
         
         public string PropertyName => "text";
 

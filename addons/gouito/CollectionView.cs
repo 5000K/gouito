@@ -1,14 +1,15 @@
 ﻿// part of 5000K/gouito, licensed under MIT. Get a license under https://github.com/5000K/gouito.
 
-// no nullability warning (warning on => nullable projects care, warning off => no project cares. implement nullability => standard projects care. ==> turn off warning for now.) 
 // ReSharper disable CheckNamespace
-#pragma warning disable CS8612
 
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Godot;
 using Container = Godot.Container;
+// ReSharper disable ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
+#pragma warning disable CS8612 // Nullability of reference types in type doesn't match implicitly implemented member.
 
 namespace gouito;
 
@@ -18,7 +19,8 @@ namespace gouito;
 /// <typeparam name="TModel"></typeparam>
 public partial class CollectionView<TModel>: Container, IBindingTarget<ObservableCollection<TModel>>
 {
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler PropertyChanged = null!;
+    
     string IBindingTarget<ObservableCollection<TModel>>.PropertyName => "list";
 
     public ObservableCollection<TModel> Value
@@ -31,11 +33,8 @@ public partial class CollectionView<TModel>: Container, IBindingTarget<Observabl
                 return;
             }
 
-            if (_value != null)
-            {
-                _value.CollectionChanged -= OnCollectionChanged;
-            }
-            
+            _value.CollectionChanged -= OnCollectionChanged;
+
             value.CollectionChanged += OnCollectionChanged;
             
             _value = value;
@@ -45,15 +44,16 @@ public partial class CollectionView<TModel>: Container, IBindingTarget<Observabl
         }
     }
 
-    [Export] public PackedScene Scene;
+    [Export] public PackedScene Scene = null!;
     private ObservableCollection<TModel> _value = new();
 
     public CollectionView()
     {
         RecreateChildren();
+        Value = new();
     }
 
-    private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    private void OnCollectionChanged([AllowNull]object sender, NotifyCollectionChangedEventArgs e)
     {
         RecreateChildren();
     }

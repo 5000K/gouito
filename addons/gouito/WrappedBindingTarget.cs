@@ -1,10 +1,11 @@
 ﻿// part of 5000K/gouito, licensed under MIT. Get a license under https://github.com/5000K/gouito.
 
-// no nullability warning (warning on => nullable projects care, warning off => no project cares. implement nullability => standard projects care. ==> turn off warning for now.) 
 // ReSharper disable CheckNamespace
-#pragma warning disable CS8612
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+// ReSharper disable ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
+#pragma warning disable CS8612 // Nullability of reference types in type doesn't match implicitly implemented member.
 
 namespace gouito;
 
@@ -16,46 +17,50 @@ namespace gouito;
 public class WrappedBindingTarget<TSource, TTarget>: IBindingTarget<TSource>
 {
     private readonly IBindingTarget<TTarget> _target;
-    private readonly IConverter<TSource, TTarget> _converter;
+    private readonly IConverter<TSource, TTarget> _converter = null!;
     private readonly IValueValidator<TTarget> _validator;
 
-    private TSource _lastValidValue = default;
+    [MaybeNull] private TSource _lastValidValue;
 
-    public WrappedBindingTarget(IBindingTarget<TTarget> target, IConverter<TSource, TTarget> converter = default, IValueValidator<TTarget> validator = default)
+    public WrappedBindingTarget(IBindingTarget<TTarget> target, [AllowNull] IConverter<TSource, TTarget> converter = default, [AllowNull]IValueValidator<TTarget> validator = default)
     {
         _target = target;
-        _validator = validator;
-        _converter = converter;
         _validator = validator ?? new NullValidator<TTarget>();
+        
 
         if (converter == default)
         {
             if (typeof(TSource) == typeof(TTarget))
             {
-                converter = (IConverter<TSource, TTarget>)new IdentityConverter<TSource>();
+                _converter = (IConverter<TSource, TTarget>)new IdentityConverter<TSource>();
             }
             else
             {
                 throw new GouitoNoConverterException(typeof(TSource).Name, typeof(TTarget).Name);
             }
         }
+        else
+        {
+            _converter = converter;
+        }
         
         target.PropertyChanged += OnPropertyChanged;
     }
 
-    private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+    private void OnPropertyChanged([AllowNull] object sender, PropertyChangedEventArgs e)
     {
         // suppress value change if value is not valid.
         if (!_validator.Check(_target.Value))
         {
-            Value = _lastValidValue;
+            if (_lastValidValue != null) Value = _lastValidValue;
+            
             return;
         }
         
         PropertyChanged?.Invoke(this, e);
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler PropertyChanged = null!;
     public string PropertyName => _target.PropertyName;
 
     public TSource Value

@@ -1,12 +1,12 @@
 ﻿// part of 5000K/gouito, licensed under MIT. Get a license under https://github.com/5000K/gouito.
 
-// no nullability warning (warning on => nullable projects care, warning off => no project cares. implement nullability => standard projects care. ==> turn off warning for now.) 
 // ReSharper disable CheckNamespace
-#pragma warning disable CS8612
 
 using System.ComponentModel;
 using System.Windows.Input;
 using Godot;
+// ReSharper disable ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
+#pragma warning disable CS8612 // Nullability of reference types in type doesn't match implicitly implemented member.
 
 namespace gouito.Target;
 
@@ -22,7 +22,7 @@ public class CommandTarget: IBindingTarget<ICommand>
     private readonly BaseButton _button;
     private readonly ButtonCommandExecutionPolicy _policy;
     private ICommand _value;
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler PropertyChanged = null!;
     public string PropertyName => "command";
 
     public ICommand Value
@@ -39,6 +39,8 @@ public class CommandTarget: IBindingTarget<ICommand>
     {
         _button = button;
         _policy = policy;
+
+        _value = RelayCommand.NullCommand;
 
         if (_policy == ButtonCommandExecutionPolicy.OnDown)
         {
@@ -69,7 +71,7 @@ public class CommandTarget: IBindingTarget<ICommand>
 
     private void OnButtonPressed()
     {
-        if (Value != null && Value.CanExecute(this))
+        if (Value.CanExecute(this))
         {
             Value.Execute(this);
         }

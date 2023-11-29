@@ -1,13 +1,11 @@
 ﻿// part of 5000K/gouito, licensed under MIT. Get a license under https://github.com/5000K/gouito.
 
-// no nullability warning (warning on => nullable projects care, warning off => no project cares. implement nullability => standard projects care. ==> turn off warning for now.) 
 // ReSharper disable CheckNamespace
-#pragma warning disable CS8612
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
-using Godot.Bridge;
 using PropertyInfo = System.Reflection.PropertyInfo;
 
 namespace gouito;
@@ -27,15 +25,11 @@ public sealed class Binding<TBinding,TSource> where TSource: INotifyPropertyChan
 {
     
     private readonly IBindingTarget<TBinding> _target;
-    private Expression<Func<TSource, TBinding>> _propertyGetter;
     private IMemberAdapter<TBinding> _adapter;
 
     public Binding(IBindingTarget<TBinding> target, TSource source, Expression<Func<TSource, TBinding>> propertyGetter, BindingDirection direction)
     {
         _target = target;
-        
-        // TODO: replace with linq analysis
-        _propertyGetter = propertyGetter;
 
         var expr = (MemberExpression)propertyGetter.Body;
 
@@ -62,7 +56,7 @@ public sealed class Binding<TBinding,TSource> where TSource: INotifyPropertyChan
         _target.Value = _adapter.Value;
     }
 
-    private void OnTargetPropertyChanged(object sender, PropertyChangedEventArgs e)
+    private void OnTargetPropertyChanged([AllowNull] object sender, PropertyChangedEventArgs e)
     {
         if (!string.IsNullOrEmpty(e.PropertyName) && e.PropertyName != _target.PropertyName) return;
         
@@ -72,7 +66,7 @@ public sealed class Binding<TBinding,TSource> where TSource: INotifyPropertyChan
         }
     }
 
-    private void OnSourcePropertyChanged(object sender, PropertyChangedEventArgs e)
+    private void OnSourcePropertyChanged([AllowNull] object sender, PropertyChangedEventArgs e)
     {
         if (!string.IsNullOrEmpty(e.PropertyName) && e.PropertyName != _adapter.Name) return;
         

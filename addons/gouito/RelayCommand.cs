@@ -1,43 +1,45 @@
 ﻿// part of 5000K/gouito, licensed under MIT. Get a license under https://github.com/5000K/gouito.
 
-// no nullability warning (warning on => nullable projects care, warning off => no project cares. implement nullability => standard projects care. ==> turn off warning for now.) 
 // ReSharper disable CheckNamespace
-#pragma warning disable CS8612
 #pragma warning disable CS0067
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
 
 namespace gouito;
 
 public class RelayCommand: ICommand
 {
-    private readonly Action _action;
+    public static readonly ICommand NullCommand = new RelayCommand(() => {});
+    
+    [MaybeNull] private readonly Action _action;
 
     public RelayCommand(Action action)
     {
         _action = action;
     }
 
-    public bool CanExecute(object parameter)
+    public bool CanExecute([AllowNull] object parameter)
     {
         return _action != null;
     }
 
-    public void Execute(object parameter)
+    public void Execute([AllowNull] object parameter)
     {
-        if (CanExecute(parameter))
+        if (_action != null)
         {
             _action();
         }
     }
 
-    public event EventHandler CanExecuteChanged;
+#pragma warning disable CS8612 // Nullability of reference types in type doesn't match implicitly implemented member.
+    public event EventHandler CanExecuteChanged = null!;
 }
 
 public class RelayCommand<T>: ICommand
 {
-    private readonly Action<T> _action;
+    [MaybeNull] private readonly Action<T> _action;
 
     public RelayCommand(Action<T> action)
     {
@@ -45,12 +47,12 @@ public class RelayCommand<T>: ICommand
     }
     
 
-    public bool CanExecute(object parameter)
+    public bool CanExecute([AllowNull] object parameter)
     {
         return _action != null && parameter is T;
     }
 
-    public void Execute(object parameter)
+    public void Execute([AllowNull] object parameter)
     {
         if (_action != null && parameter is T t)
         {
@@ -58,5 +60,5 @@ public class RelayCommand<T>: ICommand
         }
     }
     
-    public event EventHandler CanExecuteChanged;
+    public event EventHandler CanExecuteChanged = null!;
 }
