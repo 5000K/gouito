@@ -1,4 +1,10 @@
-﻿using System;
+﻿// part of 5000K/gouito, licensed under MIT. Get a license under https://github.com/5000K/gouito.
+
+// no nullability warning (warning on => nullable projects care, warning off => no project cares. implement nullability => standard projects care. ==> turn off warning for now.) 
+// ReSharper disable CheckNamespace
+#pragma warning disable CS8612
+
+using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using Godot.Bridge;
@@ -58,7 +64,7 @@ public sealed class Binding<TBinding,TSource> where TSource: INotifyPropertyChan
 
     private void OnTargetPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName != _target.PropertyName) return;
+        if (!string.IsNullOrEmpty(e.PropertyName) && e.PropertyName != _target.PropertyName) return;
         
         if (!Equals(_adapter.Value, _target.Value))
         {
@@ -68,7 +74,7 @@ public sealed class Binding<TBinding,TSource> where TSource: INotifyPropertyChan
 
     private void OnSourcePropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName != _adapter.Name) return;
+        if (!string.IsNullOrEmpty(e.PropertyName) && e.PropertyName != _adapter.Name) return;
         
         if (!Equals(_adapter.Value, _target.Value))
         {
