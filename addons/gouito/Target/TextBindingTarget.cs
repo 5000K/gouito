@@ -7,6 +7,7 @@ using Godot;
 // ReSharper disable ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
 #pragma warning disable CS8612 // Nullability of reference types in type doesn't match implicitly implemented member.
 #pragma warning disable CS0067
+#pragma warning disable CS0414
 
 namespace gouito.Target;
 
