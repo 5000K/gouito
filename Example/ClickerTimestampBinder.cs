@@ -21,6 +21,13 @@ public partial class ClickerTimestampBinder: Control, IBindingTarget<string>
 		remove => _bindingTargetImplementation.PropertyChanged -= value;
 	}
 
+	public event IBindingTarget<string>.ManagedNodeDisposedHandler ManagedNodeDisposed;
+
+	public override void _ExitTree()
+	{
+		ManagedNodeDisposed?.Invoke(this);
+	}
+
 	string IBindingTarget<string>.PropertyName => _bindingTargetImplementation.PropertyName;
 
 	public string Value

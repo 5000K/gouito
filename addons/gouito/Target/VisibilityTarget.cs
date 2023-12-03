@@ -22,6 +22,7 @@ public class VisibilityTarget: IBindingTarget<bool>
         _node3d = null!;
         _useNode3d = false;
         node.VisibilityChanged += VisibilityChanged;
+        node.TreeExiting += OnExitingTree;
     }
 
     public VisibilityTarget(Node3D node)
@@ -31,6 +32,13 @@ public class VisibilityTarget: IBindingTarget<bool>
         _useNode3d = true;
 
         node.VisibilityChanged += VisibilityChanged;
+        node.TreeExiting += OnExitingTree;
+    }
+    
+    public event IBindingTarget<bool>.ManagedNodeDisposedHandler ManagedNodeDisposed;
+    private void OnExitingTree()
+    {
+        ManagedNodeDisposed?.Invoke(this);
     }
     
     private void VisibilityChanged()

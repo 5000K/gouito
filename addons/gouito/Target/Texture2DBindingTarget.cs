@@ -24,6 +24,12 @@ public class Texture2DBindingTarget: IBindingTarget<Texture2D>
         remove => _subBindingTarget.PropertyChanged -= value;
     }
 
+    public event IBindingTarget<Texture2D>.ManagedNodeDisposedHandler ManagedNodeDisposed
+    {
+        add => _subBindingTarget.ManagedNodeDisposed += value;
+        remove => _subBindingTarget.ManagedNodeDisposed -= value;
+    }
+
     public string PropertyName => _subBindingTarget.PropertyName;
 
     public Texture2D Value
@@ -40,6 +46,7 @@ public class Texture2DBindingTarget: IBindingTarget<Texture2D>
         public TextureRectBindingTarget(TextureRect textureRect)
         {
             _textureRect = textureRect;
+            textureRect.TreeExiting += OnExitingTree;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -49,6 +56,11 @@ public class Texture2DBindingTarget: IBindingTarget<Texture2D>
         {
             get => _textureRect.Texture;
             set => _textureRect.Texture = value;
+        }
+        public event IBindingTarget<Texture2D>.ManagedNodeDisposedHandler ManagedNodeDisposed;
+        private void OnExitingTree()
+        {
+            ManagedNodeDisposed?.Invoke(this);
         }
     }
 }

@@ -56,6 +56,12 @@ public abstract partial class FluentBindingController<T>: Control, IBindingTarge
             }
         }
     }
+    
+    public event IBindingTarget<T>.ManagedNodeDisposedHandler ManagedNodeDisposed;
+    public override void _ExitTree()
+    {
+        ManagedNodeDisposed?.Invoke(this);
+    }
 
     private readonly IList<IDisposable> _managedBindings = new List<IDisposable>();
     private readonly IList<BindingCreator> _bindingCreators = new List<BindingCreator>();

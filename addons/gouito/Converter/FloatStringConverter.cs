@@ -27,7 +27,7 @@ public class FloatStringConverter: IConverter<float, string>
 
     public string Convert(float value)
     {
-        return value.ToString(_format);
+        return value.ToString(_format, _cultureInfo);
     }
 
     public float ConvertBack(string value)

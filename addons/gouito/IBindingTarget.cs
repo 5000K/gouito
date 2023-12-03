@@ -8,6 +8,10 @@ namespace gouito;
 
 public interface IBindingTarget<T>: INotifyPropertyChanged
 {
+    public delegate void ManagedNodeDisposedHandler(IBindingTarget<T> target);
+
+    public event ManagedNodeDisposedHandler? ManagedNodeDisposed;
+    
     public string PropertyName { get; }
     public T Value { get; set; }
 }

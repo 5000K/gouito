@@ -53,6 +53,13 @@ public partial class CollectionView<TModel>: Container, IBindingTarget<Observabl
         Value = new();
     }
 
+    public override void _ExitTree()
+    {
+        ManagedNodeDisposed?.Invoke(this);
+    }
+
+    public event IBindingTarget<ObservableCollection<TModel>>.ManagedNodeDisposedHandler ManagedNodeDisposed;
+
     private void OnCollectionChanged([AllowNull]object sender, NotifyCollectionChangedEventArgs e)
     {
         RecreateChildren();

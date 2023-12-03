@@ -49,6 +49,12 @@ public class TextBindingTarget: IBindingTarget<string>
         _subBindingTarget = new RichTextLabelTextBindingTarget(edit);
     }
 
+    public event IBindingTarget<string>.ManagedNodeDisposedHandler ManagedNodeDisposed
+    {
+        add => _subBindingTarget.ManagedNodeDisposed += value;
+        remove => _subBindingTarget.ManagedNodeDisposed -= value;
+    }
+
     public string PropertyName => _subBindingTarget.PropertyName;
 
     public string Value
@@ -66,6 +72,7 @@ public class TextBindingTarget: IBindingTarget<string>
         public LabelTextBindingTarget(Label label)
         {
             _label = label;
+            label.TreeExiting += OnExitingTree;
         }
         
         public event PropertyChangedEventHandler PropertyChanged = null!;
@@ -76,6 +83,11 @@ public class TextBindingTarget: IBindingTarget<string>
         {
             get => _label.Text;
             set => _label.Text = value;
+        }
+        public event IBindingTarget<string>.ManagedNodeDisposedHandler ManagedNodeDisposed;
+        private void OnExitingTree()
+        {
+            ManagedNodeDisposed?.Invoke(this);
         }
     }
 
@@ -86,6 +98,7 @@ public class TextBindingTarget: IBindingTarget<string>
         public RichTextLabelTextBindingTarget(RichTextLabel label)
         {
             _label = label;
+            label.TreeExiting += OnExitingTree;
         }
         
         public event PropertyChangedEventHandler PropertyChanged = null!;
@@ -96,6 +109,11 @@ public class TextBindingTarget: IBindingTarget<string>
         {
             get => _label.Text;
             set => _label.Text = value;
+        }
+        public event IBindingTarget<string>.ManagedNodeDisposedHandler ManagedNodeDisposed;
+        private void OnExitingTree()
+        {
+            ManagedNodeDisposed?.Invoke(this);
         }
     }
 
@@ -106,6 +124,7 @@ public class TextBindingTarget: IBindingTarget<string>
         public Label3DTextBindingTarget(Label3D label)
         {
             _label = label;
+            label.TreeExiting += OnExitingTree;
         }
         
         public event PropertyChangedEventHandler PropertyChanged = null!;
@@ -116,6 +135,11 @@ public class TextBindingTarget: IBindingTarget<string>
         {
             get => _label.Text;
             set => _label.Text = value;
+        }
+        public event IBindingTarget<string>.ManagedNodeDisposedHandler ManagedNodeDisposed;
+        private void OnExitingTree()
+        {
+            ManagedNodeDisposed?.Invoke(this);
         }
     }
 
@@ -127,6 +151,7 @@ public class TextBindingTarget: IBindingTarget<string>
         {
             _textEdit = textEdit;
             textEdit.TextSet += OnTextChanged;
+            textEdit.TreeExiting += OnExitingTree;
         }
 
         private void OnTextChanged()
@@ -143,6 +168,11 @@ public class TextBindingTarget: IBindingTarget<string>
             get => _textEdit.Text;
             set => _textEdit.Text = value;
         }
+        public event IBindingTarget<string>.ManagedNodeDisposedHandler ManagedNodeDisposed;
+        private void OnExitingTree()
+        {
+            ManagedNodeDisposed?.Invoke(this);
+        }
     }
 
 
@@ -154,6 +184,7 @@ public class TextBindingTarget: IBindingTarget<string>
         {
             _textEdit = textEdit;
             textEdit.TextSubmitted += OnTextChanged;
+            textEdit.TreeExiting += OnExitingTree;
         }
 
         private void OnTextChanged(string _)
@@ -169,6 +200,12 @@ public class TextBindingTarget: IBindingTarget<string>
         {
             get => _textEdit.Text;
             set => _textEdit.Text = value;
+        }
+        
+        public event IBindingTarget<string>.ManagedNodeDisposedHandler ManagedNodeDisposed;
+        private void OnExitingTree()
+        {
+            ManagedNodeDisposed?.Invoke(this);
         }
     }
 

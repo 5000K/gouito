@@ -45,7 +45,15 @@ public class WrappedBindingTarget<TSource, TTarget>: IBindingTarget<TSource>
         }
         
         target.PropertyChanged += OnPropertyChanged;
+        _target.ManagedNodeDisposed += OnExitingTree;
     }
+
+    public event IBindingTarget<TSource>.ManagedNodeDisposedHandler ManagedNodeDisposed;
+    private void OnExitingTree(IBindingTarget<TTarget> target)
+    {
+        ManagedNodeDisposed?.Invoke(this);
+    }
+
 
     private void OnPropertyChanged([AllowNull] object sender, PropertyChangedEventArgs e)
     {

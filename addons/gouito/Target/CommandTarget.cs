@@ -51,8 +51,16 @@ public class CommandTarget: IBindingTarget<ICommand>
         {
             button.ButtonUp += OnButtonPressed;
         }
+
+        button.TreeExiting += OnExitingTree;
     }
 
+    public event IBindingTarget<ICommand>.ManagedNodeDisposedHandler ManagedNodeDisposed;
+    private void OnExitingTree()
+    {
+        ManagedNodeDisposed?.Invoke(this);
+    }
+    
     ~CommandTarget()
     {
         if (GodotObject.IsInstanceValid(_button))

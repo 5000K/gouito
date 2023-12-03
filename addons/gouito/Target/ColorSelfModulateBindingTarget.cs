@@ -14,9 +14,16 @@ public class ColorSelfModulateBindingTarget : IBindingTarget<Color>
     public ColorSelfModulateBindingTarget(CanvasItem item)
     {
         _item = item;
+        item.TreeExiting += OnExitingTree;
+    }
+
+    private void OnExitingTree()
+    {
+        ManagedNodeDisposed?.Invoke(this);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
+    public event IBindingTarget<Color>.ManagedNodeDisposedHandler ManagedNodeDisposed;
     public string PropertyName { get; } = "selfModulate";
 
     public Color Value

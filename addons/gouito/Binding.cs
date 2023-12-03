@@ -58,9 +58,15 @@ public sealed class Binding<TBinding,TSource>: IDisposable where TSource: INotif
 
         // always set one way adapter -> target at initializing the adapter
         _target.Value = _adapter.Value;
+
+        target.ManagedNodeDisposed += OnManagedNodeDisposed;
     }
 
-
+    private void OnManagedNodeDisposed(IBindingTarget<TBinding> target)
+    {
+        Dispose();
+    }
+    
     private void OnTargetPropertyChanged([AllowNull] object sender, PropertyChangedEventArgs e)
     {
         if (!string.IsNullOrEmpty(e.PropertyName) && e.PropertyName != _target.PropertyName) return;
