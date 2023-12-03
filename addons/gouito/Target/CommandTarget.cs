@@ -77,3 +77,11 @@ public class CommandTarget: IBindingTarget<ICommand>
         }
     }
 }
+
+public static partial class TargetExtensions
+{
+    public static IBindingTarget<ICommand> CommandTarget(this BaseButton button, ButtonCommandExecutionPolicy policy = ButtonCommandExecutionPolicy.OnDown)
+    {
+        return new CommandTarget(button, policy);
+    }
+}

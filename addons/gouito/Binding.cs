@@ -21,15 +21,19 @@ public enum BindingDirection
 }
 
 
-public sealed class Binding<TBinding,TSource> where TSource: INotifyPropertyChanged
+public sealed class Binding<TBinding,TSource>: IDisposable where TSource: INotifyPropertyChanged
 {
     
-    private readonly IBindingTarget<TBinding> _target;
+    private IBindingTarget<TBinding> _target;
+    private TSource _source;
+    private BindingDirection _direction;
     private IMemberAdapter<TBinding> _adapter;
 
     public Binding(IBindingTarget<TBinding> target, TSource source, Expression<Func<TSource, TBinding>> propertyGetter, BindingDirection direction)
     {
         _target = target;
+        _source = source;
+        _direction = direction;
 
         var expr = (MemberExpression)propertyGetter.Body;
 
@@ -56,6 +60,7 @@ public sealed class Binding<TBinding,TSource> where TSource: INotifyPropertyChan
         _target.Value = _adapter.Value;
     }
 
+
     private void OnTargetPropertyChanged([AllowNull] object sender, PropertyChangedEventArgs e)
     {
         if (!string.IsNullOrEmpty(e.PropertyName) && e.PropertyName != _target.PropertyName) return;
@@ -76,7 +81,7 @@ public sealed class Binding<TBinding,TSource> where TSource: INotifyPropertyChan
         }
     }
 
-    private interface IMemberAdapter<TMember>
+    private interface IMemberAdapter<TMember>: IDisposable
     {
         public string Name { get; }
         public TMember Value { get; set; }
@@ -84,8 +89,8 @@ public sealed class Binding<TBinding,TSource> where TSource: INotifyPropertyChan
 
     private class PropertyAdapter<TMember>: IMemberAdapter<TMember>
     {
-        private readonly PropertyInfo _propertyInfo;
-        private readonly object _parentObj;
+        private PropertyInfo _propertyInfo;
+        private object _parentObj;
 
         public PropertyAdapter(PropertyInfo propertyInfo, object parentObj)
         {
@@ -108,6 +113,30 @@ public sealed class Binding<TBinding,TSource> where TSource: INotifyPropertyChan
             }
             set => _propertyInfo.SetValue(_parentObj, value);
         }
+
+        public void Dispose()
+        {
+            _propertyInfo = default;
+            _parentObj = default;
+        }
     }
-    
+
+    public void Dispose()
+    {
+        if (_direction.HasFlag(BindingDirection.OneWay))
+        {
+            _source.PropertyChanged -= OnSourcePropertyChanged;
+        }
+
+        if (_direction.HasFlag(BindingDirection.OneWayToSource))
+        {
+            _target.PropertyChanged -= OnTargetPropertyChanged;
+        }
+
+        _adapter.Dispose();
+        
+        _target = default;
+        _source = default;
+        _adapter = default;
+    }
 }

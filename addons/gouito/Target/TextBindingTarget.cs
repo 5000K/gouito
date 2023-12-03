@@ -59,7 +59,7 @@ public class TextBindingTarget: IBindingTarget<string>
 
     #region Implementations
     
-    private class LabelTextBindingTarget: IBindingTarget<string>
+    public class LabelTextBindingTarget: IBindingTarget<string>
     {
         private readonly Label _label;
 
@@ -79,7 +79,7 @@ public class TextBindingTarget: IBindingTarget<string>
         }
     }
 
-    private class RichTextLabelTextBindingTarget: IBindingTarget<string>
+    public class RichTextLabelTextBindingTarget: IBindingTarget<string>
     {
         private readonly RichTextLabel _label;
 
@@ -99,7 +99,7 @@ public class TextBindingTarget: IBindingTarget<string>
         }
     }
 
-    private class Label3DTextBindingTarget: IBindingTarget<string>
+    public class Label3DTextBindingTarget: IBindingTarget<string>
     {
         private readonly Label3D _label;
 
@@ -119,7 +119,7 @@ public class TextBindingTarget: IBindingTarget<string>
         }
     }
 
-    private class TextEditTextBindingTarget: IBindingTarget<string>
+    public class TextEditTextBindingTarget: IBindingTarget<string>
     {
         private readonly TextEdit _textEdit;
 
@@ -146,7 +146,7 @@ public class TextBindingTarget: IBindingTarget<string>
     }
 
 
-    private class LineEditTextBindingTarget: IBindingTarget<string>
+    public class LineEditTextBindingTarget: IBindingTarget<string>
     {
         private readonly LineEdit _textEdit;
 
@@ -176,6 +176,34 @@ public class TextBindingTarget: IBindingTarget<string>
     #endregion
 }
 
+
+public static partial class TargetExtensions
+{
+    public static IBindingTarget<string> TextTarget(this Label node)
+    {
+        return new TextBindingTarget.LabelTextBindingTarget(node);
+    }
+    
+    public static IBindingTarget<string> TextTarget(this Label3D node)
+    {
+        return new TextBindingTarget.Label3DTextBindingTarget(node);
+    }
+    
+    public static IBindingTarget<string> TextTarget(this TextEdit node)
+    {
+        return new TextBindingTarget.TextEditTextBindingTarget(node);
+    }
+    
+    public static IBindingTarget<string> TextTarget(this LineEdit node)
+    {
+        return new TextBindingTarget.LineEditTextBindingTarget(node);
+    }
+    
+    public static IBindingTarget<string> TextTarget(this RichTextLabel node)
+    {
+        return new TextBindingTarget.RichTextLabelTextBindingTarget(node);
+    }
+}
 
 
 

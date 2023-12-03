@@ -58,3 +58,17 @@ public class VisibilityTarget: IBindingTarget<bool>
         }
     }
 }
+
+public static partial class TargetExtensions
+{
+    public static IBindingTarget<bool> VisibilityTarget(this CanvasItem item)
+    {
+        return new VisibilityTarget(item);
+    }
+
+    public static IBindingTarget<bool> VisibilityTarget(this Node3D item)
+    {
+        return new VisibilityTarget(item);
+    }
+
+}
