@@ -28,6 +28,7 @@ public sealed class Binding<TBinding,TSource>: IDisposable where TSource: INotif
     private TSource _source;
     private BindingDirection _direction;
     private IMemberAdapter<TBinding> _adapter;
+    private bool _disposed = false;
 
     public Binding(IBindingTarget<TBinding> target, TSource source, Expression<Func<TSource, TBinding>> propertyGetter, BindingDirection direction)
     {
@@ -129,6 +130,13 @@ public sealed class Binding<TBinding,TSource>: IDisposable where TSource: INotif
 
     public void Dispose()
     {
+        if (_disposed)
+        {
+            return;
+        }
+        
+        _disposed = true;
+        
         if (_direction.HasFlag(BindingDirection.OneWay))
         {
             _source.PropertyChanged -= OnSourcePropertyChanged;

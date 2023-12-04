@@ -92,6 +92,11 @@ public abstract partial class FluentBindingController<T>: Control, IBindingTarge
     public override void _Ready()
     {
         RegisterBindings();
+
+        if (!Equals(Value, default))
+        {
+            BuildBindings();
+        }
     }
 
     protected abstract void RegisterBindings();

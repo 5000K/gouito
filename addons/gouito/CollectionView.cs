@@ -33,9 +33,16 @@ public partial class CollectionView<TModel>: Container, IBindingTarget<Observabl
                 return;
             }
 
-            _value.CollectionChanged -= OnCollectionChanged;
+            if (_value != null)
+            { 
+                _value.CollectionChanged -= OnCollectionChanged;
+            }
 
-            value.CollectionChanged += OnCollectionChanged;
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+            if (value != null)
+            {
+                value.CollectionChanged += OnCollectionChanged;
+            }
             
             _value = value;
             RecreateChildren();
@@ -45,7 +52,7 @@ public partial class CollectionView<TModel>: Container, IBindingTarget<Observabl
     }
 
     [Export] public PackedScene Scene = null!;
-    private ObservableCollection<TModel> _value = new();
+    [MaybeNull] private ObservableCollection<TModel> _value = new();
 
     public CollectionView()
     {
@@ -55,6 +62,7 @@ public partial class CollectionView<TModel>: Container, IBindingTarget<Observabl
 
     public override void _ExitTree()
     {
+        Value = null;
         ManagedNodeDisposed?.Invoke(this);
     }
 
@@ -67,6 +75,11 @@ public partial class CollectionView<TModel>: Container, IBindingTarget<Observabl
 
     private void RecreateChildren()
     {
+        if (Value == null)
+        {
+            return;
+        }
+        
         this.Fill<Node>(Scene, Value.Count);
 
         this.ModifyChildren<IBindingTarget<TModel>>((node, i) =>
